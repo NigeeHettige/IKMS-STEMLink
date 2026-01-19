@@ -5,12 +5,12 @@ with the multi-agent RAG pipeline without depending directly on LangGraph
 or agent implementation details.
 """
 
-from typing import Dict, Any
+from typing import Dict, Any,Optional
 
 from ..core.agents.graph import run_qa_flow
 
 
-def answer_question(question: str) -> Dict[str, Any]:
+def answer_question(question: str,session_id:Optional[str] = None) -> Dict[str, Any]:
     """Run the multi-agent QA flow for a given question.
 
     Args:
@@ -19,4 +19,4 @@ def answer_question(question: str) -> Dict[str, Any]:
     Returns:
         Dictionary containing at least `answer` and `context` keys.
     """
-    return run_qa_flow(question)
+    return run_qa_flow(question,session_id)

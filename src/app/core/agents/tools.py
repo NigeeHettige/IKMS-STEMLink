@@ -25,7 +25,7 @@ def retrieval_tool(query: str):
     """
     # Retrieve documents from vector store
     docs = retrieve(query, k=4)
-
+   
     # Serialize chunks into formatted string (content)
     context = serialize_chunks(docs)
 

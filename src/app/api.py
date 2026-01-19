@@ -61,13 +61,14 @@ async def qa_endpoint(payload: QuestionRequest) -> QAResponse:
         )
 
     # Delegate to the service layer which runs the multi-agent QA graph
-    result = answer_question(question)
-    print(result)
+    result = answer_question(question,session_id=payload.session_id)
+
     return QAResponse(
         answer=result.get("answer", ""),
         context=result.get("context", ""),
         plan=result.get("plan",""),
-        sub_questions=result.get("sub_questions","")
+        sub_questions=result.get("sub_questions",""),
+        session_id=result.get("session_id", "")
     )
     
     

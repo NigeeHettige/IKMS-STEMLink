@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from typing import Optional, List
 
 class QuestionRequest(BaseModel):
     """Request body for the `/qa` endpoint.
@@ -9,6 +9,7 @@ class QuestionRequest(BaseModel):
     """
 
     question: str
+    session_id: Optional[str] = None 
 
 
 class QAResponse(BaseModel):
@@ -23,3 +24,4 @@ class QAResponse(BaseModel):
     context: str
     plan: str | None 
     sub_questions: list[str] | None 
+    session_id:str

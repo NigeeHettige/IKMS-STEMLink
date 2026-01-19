@@ -101,14 +101,26 @@ def planner_node(state: QAState) -> QAState:
     - Stores the plan in `state["plan"]` and sub-questions in `state["sub_questions"]`
     """
     question = state["question"]
-
-    result = planner_agent.invoke({"messages": [HumanMessage(content=question)]})
+    messages_history = state.get("messages", [])
+    
+    agent_messages = []
+    
+    
+    for msg in messages_history[-6:]:
+        if msg["role"] == "user":
+            agent_messages.append(HumanMessage(content=msg["content"]))
+        elif msg["role"] == "assistant":
+            agent_messages.append(AIMessage(content=msg["content"]))
+            
+    agent_messages.append(HumanMessage(content=question))
+    
+    result = planner_agent.invoke({"messages": agent_messages})
 
     messages = result.get("messages", [])
     content = _extract_last_ai_content(messages)
     plan, sub_questions = _parse_plan_and_subquestions(content)
     
-
+  
     return {
         "plan": plan,
         "sub_questions":sub_questions
@@ -130,9 +142,23 @@ def retrieval_node(state: QAState) -> QAState:
     question = state["question"]
     plan = state["plan"]
     sub_questions = state["sub_questions"]
+    messages_history = state.get("messages", [])
+    
+    print(messages_history)
     formatted_subqs = '\n'.join(f"- {sq}" for sq in sub_questions) if sub_questions else "None"
     
-    user_content = f"""Question: {question}
+    context_note = ""
+    if len(messages_history) >= 2:
+      
+        last_answer = next(
+            (msg["content"] for msg in reversed(messages_history) 
+             if msg["role"] == "assistant"),
+            None
+        )
+        if last_answer:
+            context_note = f"\n[Previous answer excerpt: {last_answer[:200]}...]\n"
+    
+    user_content = f"""{context_note}Question: {question}
 
 Plan:
 {plan}
@@ -146,12 +172,12 @@ Sub-Questions:
     messages = result.get("messages", [])
     context = ""
 
-    # Prefer the last ToolMessage content (from retrieval_tool)
+    
     for msg in reversed(messages):
         if isinstance(msg, ToolMessage):
             context = str(msg.content)
             break
-
+ 
     return {
         "context": context,
     }
@@ -211,4 +237,5 @@ Please verify and correct the draft answer, removing any unsupported claims."""
 
     return {
         "answer": answer,
+        "messages": [{"role": "assistant", "content": answer}]
     }

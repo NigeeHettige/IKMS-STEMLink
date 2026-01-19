@@ -17,5 +17,6 @@ dependencies = [
     "pypdf>=6.4.1",
     "python-dotenv>=1.2.1",
     "python-multipart>=0.0.20",
+    "uuid>=1.30",
     "uvicorn>=0.38.0",
 ]
