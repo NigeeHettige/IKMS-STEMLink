@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import JSONResponse
-
+from fastapi.middleware.cors import CORSMiddleware
 from .models import QuestionRequest, QAResponse
 from .services.qa_service import answer_question
 from .services.indexing_service import index_pdf_file
@@ -18,6 +18,17 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000", 
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(

@@ -31,7 +31,7 @@ def _get_vector_store() -> PineconeVectorStore:
         embedding=embeddings,
     )
 
-@lru_cache(maxsize=128)
+
 def index_documents(file_path: Path) -> int:
     """Index a list of Document objects into the Pinecone vector store.
 

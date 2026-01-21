@@ -144,7 +144,7 @@ def retrieval_node(state: QAState) -> QAState:
     sub_questions = state["sub_questions"]
     messages_history = state.get("messages", [])
     
-    print(messages_history)
+    
     formatted_subqs = '\n'.join(f"- {sq}" for sq in sub_questions) if sub_questions else "None"
     
     context_note = ""
