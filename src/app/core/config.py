@@ -19,6 +19,14 @@ class Settings(BaseSettings):
     pinecone_api_key: str
     pinecone_index_name: str
 
+    # Supabase Configuration
+    supabase_url: str
+    supabase_key: str
+    bucket_name: str
+
+    # Origin Configuration
+    allowed_origin: str
+
     # Retrieval Configuration
     retrieval_k: int = 4
 
