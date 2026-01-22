@@ -22,5 +22,4 @@ dependencies = [
     "uvicorn>=0.38.0",
 ]
 
-[tool.vercel]
-app = "api:app"
+
