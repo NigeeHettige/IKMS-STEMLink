@@ -14,6 +14,9 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from ..config import get_settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=1)
@@ -56,12 +59,13 @@ def index_documents(file_path: Path) -> int:
     try:
         loader = PyPDFLoader(str(tmp_path), mode="single")
         docs = loader.load()
-
+        logger.info(f"Successfully read  docs :{docs}")
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         texts = text_splitter.split_documents(docs)
 
         vector_store = _get_vector_store()
         vector_store.add_documents(texts)
+        logger.info("Successfully uploaded to doc to vector space")
         return len(texts)
     finally:
         # Clean up temporary file
