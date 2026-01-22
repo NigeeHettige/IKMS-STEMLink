@@ -25,5 +25,9 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+@app.get("/")
+async def root():
+    return {"message": "Welcome to IKMS-STEMLink API"}
+
 
 app.include_router(api_router)
