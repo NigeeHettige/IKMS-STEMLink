@@ -1,4 +1,4 @@
-# IKMS-STEMLink
+# IKMS-STEMLink(Planner Agent)
 
 A sophisticated Multi-Agent Retrieval-Augmented Generation (RAG) system built with FastAPI, LangChain, and LangGraph. This system provides intelligent question-answering capabilities over indexed PDF documents using a multi-agent orchestration pipeline.
 
@@ -360,3 +360,4 @@ curl -X POST "https://ikms-stemlink-production.up.railway.app/qa" \
 ---
 
 **Note**: This is a demo system for multi-agent RAG capabilities. Ensure proper configuration of all external services (OpenAI, Pinecone, Supabase) before deployment.
+
