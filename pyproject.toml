@@ -21,3 +21,6 @@ dependencies = [
     "uuid>=1.30",
     "uvicorn>=0.38.0",
 ]
+
+[tool.vercel]
+app = "src.app.api:app"
