@@ -54,10 +54,10 @@ def index_documents(file_path: Path) -> int:
         tmp_path = tmp_file.name
 
     try:
-        loader = PyPDFLoader(str(file_path), mode="single")
+        loader = PyPDFLoader(str(tmp_path), mode="single")
         docs = loader.load()
 
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         texts = text_splitter.split_documents(docs)
 
         vector_store = _get_vector_store()
