@@ -23,4 +23,4 @@ dependencies = [
 ]
 
 [tool.vercel]
-app = "src.app.api:app"
+app = "api:app"
