@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.app.core.config import get_settings
 
 
-settings = get_settings()
+
 app = FastAPI(
     title="Class 12 Multi-Agent RAG Demo",
     description=(
@@ -14,7 +14,7 @@ app = FastAPI(
     ),
     version="0.1.0",
 )
-
+settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
