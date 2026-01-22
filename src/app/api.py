@@ -3,11 +3,13 @@ from pathlib import Path
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from  .core.config import get_settings
+from .core.storage.upload_file import uploadFile
 from .models import QuestionRequest, QAResponse
 from .services.qa_service import answer_question
 from .services.indexing_service import index_pdf_file
 
-
+settings = get_settings()
 app = FastAPI(
     title="Class 12 Multi-Agent RAG Demo",
     description=(
@@ -22,8 +24,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000", 
-        "http://127.0.0.1:3000",
+       settings.allowed_origin
     ],
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods (GET, POST, PUT, DELETE, etc.)
@@ -101,13 +102,15 @@ async def index_pdf(file: UploadFile = File(...)) -> dict:
             detail="Only PDF files are supported.",
         )
 
-    upload_dir = Path("data/uploads")
-    upload_dir.mkdir(parents=True, exist_ok=True)
+    # upload_dir = Path("data/uploads")
+    # upload_dir.mkdir(parents=True, exist_ok=True)
 
-    file_path = upload_dir / file.filename
-    contents = await file.read()
-    file_path.write_bytes(contents)
-
+    # file_path = upload_dir / file.filename
+    # contents = await file.read()
+    # file_path.write_bytes(contents)
+    upload_result = await uploadFile(file)
+    file_path = upload_result["url"]
+    
     # Index the saved PDF
     chunks_indexed = index_pdf_file(file_path)
 

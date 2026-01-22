@@ -3,6 +3,8 @@
 from pathlib import Path
 from functools import lru_cache
 from typing import List
+import tempfile
+import requests
 
 from pinecone import Pinecone
 from langchain_core.documents import Document
@@ -12,6 +14,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from ..config import get_settings
+
 
 @lru_cache(maxsize=1)
 def _get_vector_store() -> PineconeVectorStore:
@@ -41,15 +44,29 @@ def index_documents(file_path: Path) -> int:
     Returns:
         The number of documents indexed.
     """
-    loader = PyPDFLoader(str(file_path), mode="single")
-    docs = loader.load()
 
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-    texts = text_splitter.split_documents(docs)
+    response = requests.get(file_path)
+    response.raise_for_status()
 
-    vector_store = _get_vector_store()
-    vector_store.add_documents(texts)
-    return len(texts)
+    # Save to temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+        tmp_file.write(response.content)
+        tmp_path = tmp_file.name
+
+    try:
+        loader = PyPDFLoader(str(file_path), mode="single")
+        docs = loader.load()
+
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+        texts = text_splitter.split_documents(docs)
+
+        vector_store = _get_vector_store()
+        vector_store.add_documents(texts)
+        return len(texts)
+    finally:
+        # Clean up temporary file
+        Path(tmp_path).unlink(missing_ok=True)
+
 
 def get_retriever(k: int | None = None):
     """Get a Pinecone retriever instance.
