@@ -9,6 +9,7 @@ class QuestionRequest(BaseModel):
     """
 
     question: str
+    queryPlan:bool
     session_id: Optional[str] = None 
 
 

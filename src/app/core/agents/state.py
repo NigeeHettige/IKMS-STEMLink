@@ -14,7 +14,7 @@ class QAState(TypedDict):
     2. Summarization Agent: generates `draft_answer` from `question` + `context`
     3. Verification Agent: produces final `answer` from `question` + `context` + `draft_answer`
     """
-
+    queryPlan:bool
     question: str
     plan: str | None 
     sub_questions: list[str] | None 

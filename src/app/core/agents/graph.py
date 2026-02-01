@@ -7,7 +7,7 @@ from langgraph.constants import END, START
 from langgraph.graph import StateGraph
 from langgraph.checkpoint.memory import InMemorySaver
 
-from .agents import retrieval_node, summarization_node, verification_node, planner_node
+from .agents import need_planner_node, retrieval_node, summarization_node, verification_node, planner_node
 from .state import QAState
 import uuid
 
@@ -40,9 +40,10 @@ def create_qa_graph() -> Any:
     builder.add_node("retrieval", retrieval_node)
     builder.add_node("summarization", summarization_node)
     builder.add_node("verification", verification_node)
+    
 
     # Define linear flow: START -> retrieval -> summarization -> verification -> END
-    builder.add_edge(START, "planner")
+    builder.add_conditional_edges(START,need_planner_node,{True:"planner",False:"retrieval"})
     builder.add_edge("planner", "retrieval")
     builder.add_edge("retrieval", "summarization")
     builder.add_edge("summarization", "verification")
@@ -57,7 +58,7 @@ def get_qa_graph() -> Any:
     return create_qa_graph()
 
 
-def run_qa_flow(question: str, session_id: Optional[str] = None) -> Dict[str, Any]:
+def run_qa_flow(question: str, queryPlan:bool,session_id: Optional[str] = None) -> Dict[str, Any]:
     """Run the complete multi-agent QA flow for a question.
 
     This is the main entry point for the QA system. It:
@@ -88,6 +89,7 @@ def run_qa_flow(question: str, session_id: Optional[str] = None) -> Dict[str, An
         messages = [{"role": "user", "content": question}]
 
     initial_state: QAState = {
+        "queryPlan":queryPlan,
         "plan": None,
         "sub_questions": None,
         "question": question,

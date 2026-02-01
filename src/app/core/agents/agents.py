@@ -90,6 +90,12 @@ verification_agent = create_agent(
 )
 
 
+def need_planner_node(state: QAState) -> bool:
+    """Check if planning is needed."""
+    query_plan = state.get("queryPlan")
+    return bool(query_plan)
+
+
 def planner_node(state: QAState) -> QAState:
     """Planning Agent node: analyzes and decomposes user questions.
 
