@@ -162,6 +162,7 @@ POST https://ikms-stemlink-production.up.railway.app/qa
 ```json
 {
   "question": "What are the advantages of vector databases?",
+  "queryPlan":true,
   "session_id": "optional-session-id"
 }
 ```
@@ -360,4 +361,5 @@ curl -X POST "https://ikms-stemlink-production.up.railway.app/qa" \
 ---
 
 **Note**: This is a demo system for multi-agent RAG capabilities. Ensure proper configuration of all external services (OpenAI, Pinecone, Supabase) before deployment.
+
 
